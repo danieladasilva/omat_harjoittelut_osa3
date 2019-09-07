@@ -12,6 +12,32 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
 
+
+
+//MONGO-JUTUT
+
+const mongoose = require('mongoose')
+
+const password = process.argv[2]
+
+const url =
+  `mongodb+srv://Daniela:${password}@cluster0-kwssb.mongodb.net/note-app?retryWrites=true&w=majority`
+
+mongoose.connect(url, { useNewUrlParser: true })
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  date: Date,
+  important: Boolean,
+})
+
+const Note = mongoose.model('Note', noteSchema)
+
+
+
+
+
+
 let notes = [
     {
       id: 1,
@@ -39,8 +65,12 @@ app.get('/api/', (req, res) => {
     res.send('<h1>Hello World!!!</h1>')
 })
   
-app.get('/api/notes', (req, res) => {
-    res.json(notes)
+app.get('/api/notes', (request, response) => {
+  console.log("testiiii")
+  Note.find({}).then(notes => {
+    response.json(notes)
+    console.log('testi', notes)
+  })
 })
 
     //yksittäisen resurssin näyttäminen
